@@ -9,6 +9,8 @@ const usersroute = require("./routes/users");
 const contactsroute = require("./routes/contacts");
 const authroute = require("./routes/auth");
 
+// init middleware
+app.use(express.json({ extended: false }));
 //connect db
 connectdb();
 
