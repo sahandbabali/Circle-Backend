@@ -1,11 +1,16 @@
 const express = require("express");
 const { use } = require("./routes/users");
+const connectdb = require("./config/db");
+
 const app = express();
 const port = 3000;
 
 const usersroute = require("./routes/users");
 const contactsroute = require("./routes/contacts");
 const authroute = require("./routes/auth");
+
+//connect db
+connectdb();
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
