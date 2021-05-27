@@ -8,6 +8,7 @@ const { check, validationResult } = require("express-validator/check");
 const bcrypt = require("bcryptjs");
 const config = require("config");
 
+const auth = require("../middleware/auth");
 // /api/auth - login user and get token - Public
 router.post(
   "/",
@@ -60,8 +61,14 @@ router.post(
 );
 
 // /api/auth - get logged in user - Private
-router.get("/", (req, res) => {
-  res.send("get logged in user");
+router.get("/", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    res.json({ user });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error");
+  }
 });
 
 module.exports = router;
