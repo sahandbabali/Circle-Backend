@@ -49,12 +49,50 @@ router.post(
 );
 
 // /api/contacts - update contact - Private
-router.put("/:id", auth, (req, res) => {
-  res.send("update contact");
+router.put("/:id", auth, async (req, res) => {
+  const { name, email, phone, type } = req.body;
+  // build contact object
+  const contactfields = {};
+  if (name) {
+    contactfields.name = name;
+  }
+  if (email) {
+    contactfields.email = email;
+  }
+  if (phone) {
+    contactfields.phone = phone;
+  }
+  if (type) {
+    contactfields.type = type;
+  }
+
+  try {
+    let contact = await Contact.findById(req.params.id);
+    if (!contact) {
+      return res.status(404).json({ msg: "Contact not found" });
+    }
+    // make sure user owns contact
+    if (contact.user.toString() != req.user.id) {
+      return res.status(404).json({ msg: "Not authorized" });
+    }
+    contact = await Contact.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: contactfields,
+      },
+      {
+        new: true,
+      }
+    );
+    res.json(contact);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server error");
+  }
 });
 
 // /api/contacts - delete contact - Private
-router.delete("/:id", auth, (req, res) => {
+router.delete("/:id", auth, async (req, res) => {
   res.send("delete contact");
 });
 
