@@ -3,7 +3,7 @@ const { use } = require("./routes/users");
 const connectdb = require("./config/db");
 
 const app = express();
-const port = 3000;
+const port = 5000;
 
 // routes import
 const usersroute = require("./routes/users");
